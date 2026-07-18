@@ -1,0 +1,19 @@
+{
+  "name": "matthew chin",
+  "location": "oakville, on",
+  "school": {
+    "prefix": "incoming",
+    "program": "chemical engineering",
+    "institution": "mcmaster",
+    "gradYear": "'30",
+    "startsISO": "2026-09-01"
+  },
+  "prompt": "matt@mac ~",
+  "command": "chin status",
+  "lines": [
+    { "label": "building", "value": "chinos — local-first voice ai os" },
+    { "label": "shipped", "value": "octet · promptly · ai-concept-map" },
+    { "label": "stack", "value": "swift · rust · python · gdscript · typescript" },
+    { "label": "focus", "value": "local-first agents, aimed at biomedical ai" }
+  ]
+}
