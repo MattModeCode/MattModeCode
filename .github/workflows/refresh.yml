@@ -44,6 +44,22 @@ jobs:
       - name: Build hero
         run: node tools/build-hero.mjs
 
+      # Fail loudly rather than publish a worse profile. A token that cannot see
+      # private repositories yields 7 repos instead of 17 and drops Python — the
+      # largest language by a factor of four — off the chart entirely. That
+      # degradation is invisible in a green check mark, so it gets asserted here.
+      - name: Verify the token can see private repositories
+        env:
+          GITHUB_TOKEN: ${{ secrets.PROFILE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          n=$(gh api graphql -f query='{viewer{repositories(first:100,ownerAffiliations:OWNER,isFork:false){nodes{isPrivate}}}}' \
+                --jq '[.data.viewer.repositories.nodes[]|select(.isPrivate)]|length')
+          echo "private repositories visible: $n"
+          if [ "$n" -lt 1 ]; then
+            echo "::error::Token sees no private repositories, so the stats would understate the profile. Refusing to regenerate. Fix: create a fine-grained PAT scoped to *All repositories* with Contents:Read and Metadata:Read, and save it as the PROFILE_TOKEN secret."
+            exit 1
+          fi
+
       - name: Render stats and contribution grid
         env:
           GITHUB_TOKEN: ${{ secrets.PROFILE_TOKEN || secrets.GITHUB_TOKEN }}
